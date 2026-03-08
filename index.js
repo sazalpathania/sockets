@@ -34,10 +34,6 @@ io.on("connection", (socket) => {
     })
 
     socket.on("private_message", ({to,message}) => {
-        console.log("All registered users: ", users)
-        console.log("Sender socket.username: ",socket.username)
-        console.log("Receiver: ", to)
-        console.log("Receiver socket: ", users[to])
         const recepientId = users[to]
 
         if (!recepientId) {
@@ -68,6 +64,12 @@ io.on("connection", (socket) => {
 
     socket.on("disconnect", () => {
         console.log("User disconnected: ", socket.id)
+
+        if (socket.username) {
+            delete users[socket.username]
+            console.log(`${socket.username} has gone offline`)
+            console.log("Online users: ", Object.keys(users))
+        }
     })
 })
 
