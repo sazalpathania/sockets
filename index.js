@@ -2,7 +2,7 @@ import express from 'express';
 import http from 'http'
 import { Server } from 'socket.io';
 import cors from 'cors'
-import { timeStamp } from 'console';
+
 
 const app = express()
 app.use(cors({origin:"*"}))
@@ -24,7 +24,7 @@ io.on("connection", (socket) => {
         console.log(`${username} registered with socket ${socket.id}`)
         console.log("Online users: ", Object.keys(users))
 
-        socket.on("registered", {
+        socket.emit("registered", {
             message: `Welcome ${username}, you are now registered`,
             onlineUsers: Object.keys(users)   //send back who's online
         })
@@ -34,6 +34,10 @@ io.on("connection", (socket) => {
     })
 
     socket.on("private_message", ({to,message}) => {
+        console.log("All registered users: ", users)
+        console.log("Sender socket.username: ",socket.username)
+        console.log("Receiver: ", to)
+        console.log("Receiver socket: ", users[to])
         const recepientId = users[to]
 
         if (!recepientId) {
